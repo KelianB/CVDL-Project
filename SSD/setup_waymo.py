@@ -1,7 +1,7 @@
 import pathlib
 import zipfile
 
-zip_url = "(zip URL not public yet. will be uploaded soon. Ask on piazza/ TA on mail: hakon.hukkelas@ntnu.no)"
+zip_url = "https://piazza.com/class/k53ssppxkwb5yy?cid=236"
 
 if __name__ == "__main__":
     dataset_path = pathlib.Path("datasets", "waymo")

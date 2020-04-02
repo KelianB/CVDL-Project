@@ -43,17 +43,22 @@ def get_detections(cfg, ckpt):
 
     dataset_path = DatasetCatalog.DATASETS["tdt4265_test"]["data_dir"]
     dataset_path = pathlib.Path(cfg.DATASET_DIR, dataset_path)
-    image_path = pathlib.Path(dataset_path, "images")
-    image_paths = list(image_path.glob("*.jpg"))
+    image_dir = pathlib.Path(dataset_path, "images")
+    image_paths = list(image_dir.glob("*.jpg"))
 
     transforms = build_transforms(cfg, is_train=False)
     model.eval()
     detections = []
-    labels = read_labels(image_path.parent.parent.joinpath("train", "labels.json"))
+    labels = read_labels(image_dir.parent.parent.joinpath("train", "labels.json"))
     check_all_images_exists(labels, image_paths)
-    for i, image_path in enumerate(tqdm.tqdm(image_paths, desc="Inference on images")):
+    # Filter labels on if they are test and only take the 7th frame
+    labels = [label for label in labels if label["is_test"]]
+    labels = [label for label in labels if label["image_id"] % 7 == 0]
+    for i, label in enumerate(tqdm.tqdm(labels, desc="Inference on images")):
+        image_id = label["image_id"]
+        image_path = image_dir.joinpath(f"{image_id}.jpg")
         image_detections = {
-            "image_id": image_path.stem,
+            "image_id": int(image_id),
             "bounding_boxes": []
         }
         image = np.array(Image.open(image_path).convert("RGB"))
