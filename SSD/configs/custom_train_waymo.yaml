@@ -6,7 +6,8 @@ MODEL:
         OUT_CHANNELS: [128, 256, 512, 256, 128, 64]
         INPUT_CHANNELS: 3
 INPUT:
-    IMAGE_SIZE: 300
+    IMAGE_WIDTH: 320
+    IMAGE_HEIGHT: 240
 DATASETS:
     TRAIN: ("waymo_train",)
     TEST: ("waymo_val", )
