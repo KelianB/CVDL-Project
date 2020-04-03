@@ -12,3 +12,4 @@ __pycache__/
 mnist_detection/
 outputs/
 original_mnist/
+SSD/datasets/*
