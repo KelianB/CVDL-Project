@@ -8,13 +8,13 @@ def build_transforms(cfg, is_train=True):
         transform = [
             ConvertFromInts(),
             ToPercentCoords(),
-            NonSquareResize(cfg.INPUT.IMAGE_WIDTH, cfg.INPUT.IMAGE_HEIGHT),
+            NonSquareResize(cfg.INPUT.IMAGE_SIZE[0], cfg.INPUT.IMAGE_SIZE[1]),
             SubtractMeans(cfg.INPUT.PIXEL_MEAN),
             ToTensor(),
         ]
     else:
         transform = [
-            NonSquareResize(cfg.INPUT.IMAGE_WIDTH, cfg.INPUT.IMAGE_HEIGHT),
+            NonSquareResize(cfg.INPUT.IMAGE_SIZE[0], cfg.INPUT.IMAGE_SIZE[1]),
             SubtractMeans(cfg.INPUT.PIXEL_MEAN),
             ToTensor()
         ]

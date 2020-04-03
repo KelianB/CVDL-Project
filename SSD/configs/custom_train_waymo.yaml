@@ -5,9 +5,10 @@ MODEL:
         PRETRAINED: False
         OUT_CHANNELS: [128, 256, 512, 256, 128, 64]
         INPUT_CHANNELS: 3
+    PRIORS:
+        FEATURE_MAPS: [[40,30], [20,15], [10,8], [5,4], [3,2], [1,1]]
 INPUT:
-    IMAGE_WIDTH: 320
-    IMAGE_HEIGHT: 240
+    IMAGE_SIZE: (320,240)
 DATASETS:
     TRAIN: ("waymo_train",)
     TEST: ("waymo_val", )

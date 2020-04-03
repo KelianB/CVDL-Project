@@ -23,25 +23,29 @@ class PriorBox:
         """
         priors = []
         for k, f in enumerate(self.feature_maps):
-            scale = self.image_size / self.strides[k]
-            for i, j in product(range(f), repeat=2):
+            scale_x = self.image_size[0] / self.strides[k]
+            scale_y = self.image_size[1] / self.strides[k]
+            for i, j in product(range(f[1]), range(f[0])):
                 # unit center x,y
-                cx = (j + 0.5) / scale
-                cy = (i + 0.5) / scale
+                cx = (j + 0.5) / scale_x
+                cy = (i + 0.5) / scale_y
 
                 # small sized square box
                 size = self.min_sizes[k]
-                h = w = size / self.image_size
+                h = size / self.image_size[1]
+                w = size / self.image_size[0]
                 priors.append([cx, cy, w, h])
 
                 # big sized square box
                 size = sqrt(self.min_sizes[k] * self.max_sizes[k])
-                h = w = size / self.image_size
+                h = size / self.image_size[1]
+                w = size / self.image_size[0]
                 priors.append([cx, cy, w, h])
 
                 # change h/w ratio of the small sized box
                 size = self.min_sizes[k]
-                h = w = size / self.image_size
+                h = size / self.image_size[1]
+                w = size / self.image_size[0]
                 for ratio in self.aspect_ratios[k]:
                     ratio = sqrt(ratio)
                     priors.append([cx, cy, w * ratio, h / ratio])

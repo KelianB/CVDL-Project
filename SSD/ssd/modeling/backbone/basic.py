@@ -72,6 +72,9 @@ class BasicModel(nn.Module):
         # Custom backbone
         feature_bank_extractors = nn.Sequential(
             nn.Sequential(
+                # Pad 320x240 to square (320x320)
+                # nn.Conv2d(in_channels=image_channels, out_channels=image_channels, kernel_size=1, stride=1, padding=(40,0)),# 
+                
                 nn.Conv2d(in_channels=image_channels, out_channels=16, kernel_size=4, stride=1, padding=2),
                 nn.ReLU(),
 
@@ -138,7 +141,7 @@ class BasicModel(nn.Module):
             ),
             nn.Sequential(
                 nn.ReLU(),
-                nn.Conv2d(in_channels=output_channels[4], out_channels=128, kernel_size=3, stride=1, padding=1),
+                nn.Conv2d(in_channels=output_channels[4], out_channels=128, kernel_size=(2,3), stride=1, padding=1),
                 nn.BatchNorm2d(128),
                 nn.ReLU(),
                 
@@ -172,7 +175,7 @@ class BasicModel(nn.Module):
         for idx, feature in enumerate(out_features):
             out_channel = self.output_channels[idx]
             feature_map_size = self.output_feature_size[idx] 
-            expected_shape = (out_channel, feature_map_size, feature_map_size)
+            expected_shape = (out_channel, feature_map_size[1], feature_map_size[0])
             assert feature.shape[1:] == expected_shape, \
                 f"Expected shape: {expected_shape}, got: {feature.shape[1:]} at output IDX: {idx}"
         return tuple(out_features)
