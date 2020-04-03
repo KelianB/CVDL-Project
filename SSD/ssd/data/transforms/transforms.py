@@ -119,7 +119,16 @@ class Resize(object):
         image = cv2.resize(image, (self.size,
                                    self.size))
         return image, boxes, labels
+    
+class NonSquareResize(object):
+    def __init__(self, width=300, height=300):
+        self.width = width
+        self.height = height
 
+    def __call__(self, image, boxes=None, labels=None):
+        image = cv2.resize(image, (self.width,
+                                   self.height))
+        return image, boxes, labels
 
 class RandomSaturation(object):
     def __init__(self, lower=0.5, upper=1.5):
