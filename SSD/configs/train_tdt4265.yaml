@@ -2,11 +2,11 @@ MODEL:
     NUM_CLASSES: 5
     BACKBONE:
         NAME: 'basic'
-        PRETRAINED: False
+        PRETRAINED: True
         OUT_CHANNELS: [128, 256, 128, 128, 64, 64]
         INPUT_CHANNELS: 3
 INPUT:
-    IMAGE_SIZE: 300
+    IMAGE_SIZE: (300, 300)
 DATASETS:
     TRAIN: ("tdt4265_train",)
     TEST: ("tdt4265_val", )

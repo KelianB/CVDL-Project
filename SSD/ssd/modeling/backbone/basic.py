@@ -1,6 +1,7 @@
 import torch
 from torch import nn
 from ssd import torch_utils
+import torchvision.models as models
 
 class BasicModel(nn.Module):
     """
@@ -70,7 +71,7 @@ class BasicModel(nn.Module):
        """
 
         # Custom backbone
-        feature_bank_extractors = nn.Sequential(
+        '''feature_bank_extractors = nn.Sequential(
             nn.Sequential(
                 # Pad 320x240 to square (320x320)
                 # nn.Conv2d(in_channels=image_channels, out_channels=image_channels, kernel_size=1, stride=1, padding=(40,0)),# 
@@ -148,8 +149,28 @@ class BasicModel(nn.Module):
                 nn.Dropout2d(p=0.2),
                 nn.Conv2d(in_channels=128, out_channels=output_channels[5], kernel_size=3, stride=2, padding=0),
             )
-        )
+        )'''
         
+        #ResNet18 Backbone
+        layer0 = models.resnet18(pretrained=True).conv1
+        for param in layer0.parameters():
+            param.grad_required=False
+            
+        layers = [
+            nn.Sequential(nn.Conv2d(in_channels=image_channels, out_channels=image_channels, kernel_size=1, stride=1, padding=(28,0)),
+                          layer0),
+            nn.Sequential(models.resnet18(pretrained=True).maxpool,
+                          models.resnet18(pretrained=True).layer1),
+            nn.Sequential(models.resnet18(pretrained=True).layer2),
+            nn.Sequential(models.resnet18(pretrained=True).layer3),
+            nn.Sequential(models.resnet18(pretrained=True).layer4)]
+        for layer in layers[1:4]:
+            for param in layer.parameters():
+                param.grad_required=False
+                
+        
+        feature_bank_extractors = nn.Sequential(
+            layers[0], layers[1], layers[2], layers[3], layers[4])
         
         self.feature_bank_extractors = torch_utils.to_cuda(feature_bank_extractors)
 
