@@ -69,7 +69,12 @@ class WaymoDataset(torch.utils.data.Dataset):
     def read_image_ids(self, split):
         images = self.data_dir.joinpath("images").glob("*.jpg")
         image_ids = [int(x.stem) for x in images]
-
+        
+        
+        # Added fix
+        image_ids.sort()
+        
+        
         return image_ids
 
     def _get_annotation(self, image_id):

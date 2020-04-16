@@ -90,7 +90,7 @@ class SubtractMeans(object):
 
 
 class DivideBySTD(object):
-    def __init__(self, mean):
+    def __init__(self, std):
         self.std = np.array(std, dtype=np.float32)
 
     def __call__(self, image, boxes=None, labels=None):
