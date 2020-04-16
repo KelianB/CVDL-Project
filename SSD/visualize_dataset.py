@@ -10,7 +10,7 @@ cfg.merge_from_file(args.config_file)
 cfg.merge_from_list(args.opts)
 cfg.freeze()
 
-data_loader = make_data_loader(cfg, is_train=False)
+data_loader = make_data_loader(cfg, is_train=True)
 if isinstance(data_loader, list):
     data_loader = data_loader[0]
 dataset = data_loader.dataset

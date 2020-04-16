@@ -8,6 +8,9 @@ def build_transforms(cfg, is_train=True):
         transform = [
             ConvertFromInts(),
             ToPercentCoords(),
+            PhotometricDistort(),
+            RandomMirror(),
+            RandomSampleCrop(),
             NonSquareResize(cfg.INPUT.IMAGE_SIZE[0], cfg.INPUT.IMAGE_SIZE[1]),
             SubtractMeans(cfg.INPUT.PIXEL_MEAN),
             ToTensor(),

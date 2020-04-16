@@ -3,7 +3,7 @@ MODEL:
     BACKBONE:
         NAME: 'basic'
         PRETRAINED: False
-        OUT_CHANNELS: [128, 256, 512, 256, 128, 64]
+        OUT_CHANNELS: [128, 256, 128, 128, 64, 64]
         INPUT_CHANNELS: 3
     PRIORS:
         FEATURE_MAPS: [[40,30], [20,15], [10,8], [5,4], [3,2], [1,1]]
