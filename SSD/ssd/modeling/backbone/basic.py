@@ -150,27 +150,46 @@ class BasicModel(nn.Module):
                 nn.Conv2d(in_channels=128, out_channels=output_channels[5], kernel_size=3, stride=2, padding=0),
             )
         )'''
+        resnet = models.resnet18(pretrained=True)
         
         #ResNet18 Backbone
-        layer0 = models.resnet18(pretrained=True).conv1
-        for param in layer0.parameters():
-            param.grad_required=False
+        self.layer0 = nn.Sequential(resnet.conv1, resnet.bn1, resnet.relu, resnet.maxpool)
+        #for param in self.layer0.parameters():
+        #    param.grad_required=False
             
         layers = [
-            nn.Sequential(nn.Conv2d(in_channels=image_channels, out_channels=image_channels, kernel_size=1, stride=1, padding=(28,0)),
-                          layer0),
-            nn.Sequential(models.resnet18(pretrained=True).maxpool,
-                          models.resnet18(pretrained=True).layer1),
-            nn.Sequential(models.resnet18(pretrained=True).layer2),
-            nn.Sequential(models.resnet18(pretrained=True).layer3),
-            nn.Sequential(models.resnet18(pretrained=True).layer4)]
-        for layer in layers[1:4]:
-            for param in layer.parameters():
-                param.grad_required=False
+            nn.Sequential(resnet.layer1),
+            nn.Sequential(resnet.layer2),
+            nn.Sequential(resnet.layer3),
+            nn.Sequential(resnet.layer4)]
+        #for layer in layers:
+        #    for param in layer.parameters():
+        #        param.grad_required=False
+                
+        layers.append(
+            nn.Sequential(
+                nn.ReLU(),
+                nn.Dropout2d(p=0.1),
+                nn.Conv2d(in_channels=output_channels[3], out_channels=output_channels[3], kernel_size=3, stride=1, padding=1),
+                nn.BatchNorm2d(output_channels[3]),
+                nn.ReLU(),
+
+                nn.Conv2d(in_channels=output_channels[3], out_channels=output_channels[4], kernel_size=3, stride=2, padding=1),
+            ))
+        layers.append(
+            nn.Sequential(
+                nn.ReLU(),
+                nn.Conv2d(in_channels=output_channels[4], out_channels=output_channels[4], kernel_size=(3,3), stride=1, padding=1),
+                nn.BatchNorm2d(output_channels[4]),
+                nn.ReLU(),
+                
+                nn.Dropout2d(p=0.2),
+                nn.Conv2d(in_channels=output_channels[4], out_channels=output_channels[5], kernel_size=3, stride=2, padding=0),
+            ))
                 
         
         feature_bank_extractors = nn.Sequential(
-            layers[0], layers[1], layers[2], layers[3], layers[4])
+            layers[0], layers[1], layers[2], layers[3], layers[4], layers[5])
         
         self.feature_bank_extractors = torch_utils.to_cuda(feature_bank_extractors)
 
@@ -189,6 +208,7 @@ class BasicModel(nn.Module):
         """
         
         out_features = []
+        x = self.layer0(x)
         for seq in self.feature_bank_extractors:
             x = seq(x)
             out_features.append(x)

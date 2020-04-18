@@ -3,20 +3,21 @@ MODEL:
     BACKBONE:
         NAME: 'basic'
         PRETRAINED: False
-        OUT_CHANNELS: [64, 64, 128, 256, 512]
+        OUT_CHANNELS: [64, 128, 256, 512, 1024, 2048]
         INPUT_CHANNELS: 3
     PRIORS:
-        FEATURE_MAPS: [[112,112], [56,56], [28,28], [14,14], [7,7]]
+        FEATURE_MAPS: [[56,56], [28,28], [14,14], [7,7], [4,4], [1,1]]
 INPUT:
-    IMAGE_SIZE: (224, 168)
+    IMAGE_SIZE: (224, 224)
 DATASETS:
     TRAIN: ("waymo_train",)
     TEST: ("waymo_val", )
 SOLVER:
-    MAX_ITER: 10000
+    MAX_ITER: 100000
     LR_STEPS: [80000, 100000]
     GAMMA: 0.1
     BATCH_SIZE: 16
-    LR: 1e-3
+    LR: 1e-1
 OUTPUT_DIR: 'outputs/basic'
 DATASET_DIR: "datasets"
+EVAL_STEP: 2000
