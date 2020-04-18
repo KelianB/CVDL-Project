@@ -1,0 +1,25 @@
+MODEL:
+    NUM_CLASSES: 5
+    BACKBONE:
+        NAME: 'basic'
+        PRETRAINED: False
+        # [128, 256, 512, 256, 128, 64]
+        # OUT_CHANNELS: [512, 1024, 512, 256, 256, 256]
+        OUT_CHANNELS: [1024, 512, 512, 256, 256, 256]
+        INPUT_CHANNELS: 3
+    PRIORS:
+        FEATURE_MAPS: [[38,38], [19,19], [10,10], [5,5], [3,3], [1,1]]
+INPUT:
+    IMAGE_SIZE: (300,300)
+DATASETS:
+    TRAIN: ("waymo_train",)
+    TEST: ("waymo_val", )
+SOLVER:
+    MAX_ITER: 120000
+    LR_STEPS: [80000, 100000]
+    GAMMA: 0.1
+    BATCH_SIZE: 16
+    LR: 1e-3
+    WEIGHT_DECAY: 0.005
+OUTPUT_DIR: 'outputs/basic'
+DATASET_DIR: "datasets"
