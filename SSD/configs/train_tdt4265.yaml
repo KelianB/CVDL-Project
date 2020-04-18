@@ -6,7 +6,7 @@ MODEL:
         OUT_CHANNELS: [128, 256, 128, 128, 64, 64]
         INPUT_CHANNELS: 3
 INPUT:
-    IMAGE_SIZE: 300
+    IMAGE_SIZE: (300, 300)
 DATASETS:
     TRAIN: ("tdt4265_train",)
     TEST: ("tdt4265_val", )
@@ -18,3 +18,4 @@ SOLVER:
     LR: 1e-3
 OUTPUT_DIR: 'outputs/basic'
 DATASET_DIR: "datasets"
+EVAL_STEP: 2000

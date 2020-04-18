@@ -75,78 +75,78 @@ class BasicModel(nn.Module):
                 # Pad 320x240 to square (320x320)
                 # nn.Conv2d(in_channels=image_channels, out_channels=image_channels, kernel_size=1, stride=1, padding=(40,0)),# 
                 
-                nn.Conv2d(in_channels=image_channels, out_channels=16, kernel_size=4, stride=1, padding=2),
+                nn.Conv2d(in_channels=image_channels, out_channels=32, kernel_size=4, stride=1, padding=2),
                 nn.ReLU(),
 
-                nn.Conv2d(in_channels=16, out_channels=32, kernel_size=5, stride=1, padding=2),
-                nn.BatchNorm2d(32),
+                nn.Conv2d(in_channels=32, out_channels=64, kernel_size=5, stride=1, padding=2),
+                nn.BatchNorm2d(64),
                 nn.ReLU(),
 
-                nn.Conv2d(in_channels=32, out_channels=32, kernel_size=3, stride=1, padding=1),
+                nn.Conv2d(in_channels=64, out_channels=64, kernel_size=3, stride=1, padding=1),
                 nn.MaxPool2d(kernel_size=2, stride=2),
                 nn.ReLU(),
                 
                 nn.Dropout2d(p=0.1),
-                nn.Conv2d(in_channels=32, out_channels=64, kernel_size=4, stride=1, padding=2),
+                nn.Conv2d(in_channels=64, out_channels=128, kernel_size=4, stride=1, padding=2),
                 nn.MaxPool2d(kernel_size=2, stride=2),
                 nn.ReLU(),
                 
-                nn.Conv2d(in_channels=64, out_channels=64, kernel_size=5, stride=1, padding=2),
-                nn.BatchNorm2d(64),
-                nn.ReLU(),
-                
-                nn.Conv2d(in_channels=64, out_channels=64, kernel_size=5, stride=1, padding=2),
-                nn.BatchNorm2d(64),
-                nn.ReLU(),
-                nn.Conv2d(in_channels=64, out_channels=output_channels[0], kernel_size=3, stride=2, padding=1),
-            ),
-            nn.Sequential(
-                nn.ReLU(),
-                nn.Dropout2d(p=0.2),
-                nn.Conv2d(in_channels=output_channels[0], out_channels=128, kernel_size=3, stride=1, padding=1),
-                nn.BatchNorm2d(128),
-                nn.ReLU(),
-
                 nn.Conv2d(in_channels=128, out_channels=128, kernel_size=5, stride=1, padding=2),
-                nn.ReLU(),
-                
-                nn.Conv2d(in_channels=128, out_channels=output_channels[1], kernel_size=3, stride=2, padding=1),
-            ),
-            nn.Sequential(
-                nn.ReLU(),
-                nn.Dropout2d(p=0.1),
-                nn.Conv2d(in_channels=output_channels[1], out_channels=256, kernel_size=3, stride=1, padding=1),
-                nn.BatchNorm2d(256),
-                nn.ReLU(),
-                
-                nn.Conv2d(in_channels=256, out_channels=output_channels[2], kernel_size=3, stride=2, padding=1),
-            ),
-            nn.Sequential(
-                nn.ReLU(),
-                nn.Dropout2d(p=0.1),
-                nn.Conv2d(in_channels=output_channels[2], out_channels=256, kernel_size=3, stride=1, padding=1),
-                nn.BatchNorm2d(256),
-                nn.ReLU(),
-                
-                nn.Conv2d(in_channels=256, out_channels=output_channels[3], kernel_size=3, stride=2, padding=1),
-            ),
-            nn.Sequential(
-                nn.ReLU(),
-                nn.Dropout2d(p=0.1),
-                nn.Conv2d(in_channels=output_channels[3], out_channels=128, kernel_size=3, stride=1, padding=1),
                 nn.BatchNorm2d(128),
+                nn.ReLU(),
+                
+                nn.Conv2d(in_channels=128, out_channels=128, kernel_size=5, stride=1, padding=2),
+                nn.BatchNorm2d(128),
+                nn.ReLU(),
+                nn.Conv2d(in_channels=128, out_channels=output_channels[0], kernel_size=3, stride=2, padding=1),
+            ),
+            nn.Sequential(
+                nn.ReLU(),
+                nn.Dropout2d(p=0.2),
+                nn.Conv2d(in_channels=output_channels[0], out_channels=256, kernel_size=3, stride=1, padding=1),
+                nn.BatchNorm2d(256),
                 nn.ReLU(),
 
-                nn.Conv2d(in_channels=128, out_channels=output_channels[4], kernel_size=3, stride=2, padding=1),
+                nn.Conv2d(in_channels=256, out_channels=256, kernel_size=5, stride=1, padding=2),
+                nn.ReLU(),
+                
+                nn.Conv2d(in_channels=256, out_channels=output_channels[1], kernel_size=3, stride=2, padding=1),
             ),
             nn.Sequential(
                 nn.ReLU(),
-                nn.Conv2d(in_channels=output_channels[4], out_channels=128, kernel_size=(2,3), stride=1, padding=1),
-                nn.BatchNorm2d(128),
+                nn.Dropout2d(p=0.1),
+                nn.Conv2d(in_channels=output_channels[1], out_channels=512, kernel_size=3, stride=1, padding=1),
+                nn.BatchNorm2d(512),
+                nn.ReLU(),
+                
+                nn.Conv2d(in_channels=512, out_channels=output_channels[2], kernel_size=3, stride=2, padding=1),
+            ),
+            nn.Sequential(
+                nn.ReLU(),
+                nn.Dropout2d(p=0.1),
+                nn.Conv2d(in_channels=output_channels[2], out_channels=512, kernel_size=3, stride=1, padding=1),
+                nn.BatchNorm2d(512),
+                nn.ReLU(),
+                
+                nn.Conv2d(in_channels=512, out_channels=output_channels[3], kernel_size=3, stride=2, padding=1),
+            ),
+            nn.Sequential(
+                nn.ReLU(),
+                nn.Dropout2d(p=0.1),
+                nn.Conv2d(in_channels=output_channels[3], out_channels=256, kernel_size=3, stride=1, padding=1),
+                nn.BatchNorm2d(256),
+                nn.ReLU(),
+
+                nn.Conv2d(in_channels=256, out_channels=output_channels[4], kernel_size=3, stride=2, padding=1),
+            ),
+            nn.Sequential(
+                nn.ReLU(),
+                nn.Conv2d(in_channels=output_channels[4], out_channels=256, kernel_size=(2,3), stride=1, padding=1),
+                nn.BatchNorm2d(256),
                 nn.ReLU(),
                 
                 nn.Dropout2d(p=0.2),
-                nn.Conv2d(in_channels=128, out_channels=output_channels[5], kernel_size=3, stride=2, padding=0),
+                nn.Conv2d(in_channels=256, out_channels=output_channels[5], kernel_size=3, stride=2, padding=0),
             )
         )
         
