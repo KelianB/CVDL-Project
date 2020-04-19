@@ -87,6 +87,16 @@ class SubtractMeans(object):
         image = image.astype(np.float32)
         image -= self.mean
         return image.astype(np.float32), boxes, labels
+    
+    
+class DivideBySTD(object):
+    def __init__(self, std):
+        self.std = np.array(std, dtype=np.float32)
+
+    def __call__(self, image, boxes=None, labels=None):
+        image = image.astype(np.float32)
+        image /= self.std
+        return image.astype(np.float32), boxes, labels
 
 
 class ToAbsoluteCoords(object):

@@ -150,7 +150,7 @@ class BasicModel(nn.Module):
                 nn.Conv2d(in_channels=128, out_channels=output_channels[5], kernel_size=3, stride=2, padding=0),
             )
         )'''
-        resnet = models.resnet18(pretrained=True)
+        resnet = models.resnet34(pretrained=True)
         
         #ResNet18 Backbone
         self.layer0 = nn.Sequential(resnet.conv1, resnet.bn1, resnet.relu, resnet.maxpool)

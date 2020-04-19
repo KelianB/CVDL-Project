@@ -2,7 +2,7 @@ MODEL:
     NUM_CLASSES: 5
     BACKBONE:
         NAME: 'basic'
-        PRETRAINED: False
+        PRETRAINED: True
         OUT_CHANNELS: [64, 128, 256, 512, 256, 256]
         INPUT_CHANNELS: 3
     PRIORS:
@@ -10,10 +10,10 @@ MODEL:
 INPUT:
     IMAGE_SIZE: (224, 224)
 DATASETS:
-    TRAIN: ("waymo_train",)
-    TEST: ("waymo_val", )
+    TRAIN: ("tdt4265_train",)
+    TEST: ("tdt4265_val", )
 SOLVER:
-    MAX_ITER: 100000
+    MAX_ITER: 120000
     LR_STEPS: [80000, 100000]
     GAMMA: 0.1
     BATCH_SIZE: 16
