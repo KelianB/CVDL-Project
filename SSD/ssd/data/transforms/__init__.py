@@ -8,18 +8,20 @@ def build_transforms(cfg, is_train=True):
         transform = [
             ConvertFromInts(),
             ToPercentCoords(),
-            #RandomSampleCrop(),
+            RandomSampleCrop(),
             #Expand(),
             NonSquareResize(cfg.INPUT.IMAGE_SIZE[0], cfg.INPUT.IMAGE_SIZE[1]),
-            #PhotometricDistort(),
-            #RandomMirror(),
+            RandomMirror(),
+            PhotometricDistort(),
             SubtractMeans(cfg.INPUT.PIXEL_MEAN),
+            DivideBySTD(cfg.INPUT.PIXEL_STD),
             ToTensor(),
         ]
     else:
         transform = [
             NonSquareResize(cfg.INPUT.IMAGE_SIZE[0], cfg.INPUT.IMAGE_SIZE[1]),
             SubtractMeans(cfg.INPUT.PIXEL_MEAN),
+            DivideBySTD(cfg.INPUT.PIXEL_STD),
             ToTensor()
         ]
     transform = Compose(transform)

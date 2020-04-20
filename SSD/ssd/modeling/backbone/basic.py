@@ -119,6 +119,9 @@ class BasicModel(nn.Module):
                 nn.BatchNorm2d(512),
                 nn.ReLU(),
                 
+                nn.Conv2d(in_channels=512, out_channels=512, kernel_size=5, stride=1, padding=2),
+                nn.ReLU(),
+                
                 nn.Conv2d(in_channels=512, out_channels=output_channels[2], kernel_size=3, stride=2, padding=1),
             ),
             nn.Sequential(
@@ -126,6 +129,9 @@ class BasicModel(nn.Module):
                 nn.Dropout2d(p=0.1),
                 nn.Conv2d(in_channels=output_channels[2], out_channels=512, kernel_size=3, stride=1, padding=1),
                 nn.BatchNorm2d(512),
+                nn.ReLU(),
+                
+                nn.Conv2d(in_channels=512, out_channels=512, kernel_size=5, stride=1, padding=2),
                 nn.ReLU(),
                 
                 nn.Conv2d(in_channels=512, out_channels=output_channels[3], kernel_size=3, stride=2, padding=1),
@@ -136,6 +142,9 @@ class BasicModel(nn.Module):
                 nn.Conv2d(in_channels=output_channels[3], out_channels=256, kernel_size=3, stride=1, padding=1),
                 nn.BatchNorm2d(256),
                 nn.ReLU(),
+                
+                nn.Conv2d(in_channels=256, out_channels=256, kernel_size=5, stride=1, padding=2),
+                nn.ReLU(),
 
                 nn.Conv2d(in_channels=256, out_channels=output_channels[4], kernel_size=3, stride=2, padding=1),
             ),
@@ -143,6 +152,9 @@ class BasicModel(nn.Module):
                 nn.ReLU(),
                 nn.Conv2d(in_channels=output_channels[4], out_channels=256, kernel_size=(2,3), stride=1, padding=1),
                 nn.BatchNorm2d(256),
+                nn.ReLU(),
+                
+                nn.Conv2d(in_channels=256, out_channels=256, kernel_size=5, stride=1, padding=2),
                 nn.ReLU(),
                 
                 nn.Dropout2d(p=0.2),
