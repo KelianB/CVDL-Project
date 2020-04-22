@@ -11,7 +11,7 @@ class TDT4265Dataset(WaymoDataset):
         "cyclist",
     )
     include_automatic_annotation = False
-    validation_percentage = 0.2
+    validation_percentage = 0.1
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
