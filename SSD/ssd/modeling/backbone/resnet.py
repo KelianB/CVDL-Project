@@ -175,24 +175,19 @@ class ResNetFeatureExtractor(nn.Module):
                 nn.BatchNorm2d(256),
                 nn.ReLU(inplace=True)
             ),
-            # OUTPUT FMAP 1
-            OutputMarker(),
+            OutputMarker(), # OUTPUT FMAP 1
             
             resnet_layer(3),            
-            # OUTPUT FMAP 2
-            OutputMarker(),
+            OutputMarker(), # OUTPUT FMAP 2
             
             resnet_layer(4),
-            # OUTPUT FMAP 3
-            OutputMarker(),
+            OutputMarker(), # OUTPUT FMAP 3
             
             resnet_layer(5),
-            # OUTPUT FMAP 4
-            OutputMarker(),
+            OutputMarker(), # OUTPUT FMAP 4
             
             resnet_layer(6),
-            # OUTPUT FMAP 5
-            OutputMarker(),
+            OutputMarker(), # OUTPUT FMAP 5
             
             resnet_layer(7),
             nn.Sequential(
@@ -200,8 +195,7 @@ class ResNetFeatureExtractor(nn.Module):
                 nn.BatchNorm2d(64),
                 nn.ReLU(inplace=True)
             ),
-            # FMAP 6
-            OutputMarker()
+            OutputMarker() # OUTPUT FMAP 6
         ])
         
         for m in self.modules():
@@ -235,7 +229,8 @@ class ResNetFeatureExtractor(nn.Module):
 
         return nn.Sequential(*layers)
 
- 
+     
+    # No need for a forward function (we call the layers one by one from the SSD backbone)
     """
     def _forward_impl(self, x):
         # See note [TorchScript super()]
@@ -255,26 +250,30 @@ class ResNetFeatureExtractor(nn.Module):
         return self._forward_impl(x)
     """
     
-    
 
     
     
     
+    
+    
+    
+  
+    
+    
+    
+    
+    
+    
+""" BELOW IS ORIGINAL TORCHVISION CODE FOR RESNET """
+    
+    
+    
             
             
             
             
             
             
-            
-    
-    
-    
-    
-    
-    
-    
-    
     
     
     
