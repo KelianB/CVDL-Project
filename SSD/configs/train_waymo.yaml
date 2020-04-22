@@ -18,3 +18,5 @@ SOLVER:
     LR: 1e-3
 OUTPUT_DIR: 'outputs/basic'
 DATASET_DIR: "datasets"
+EVAL_STEP: 1000
+MODEL_SAVE_STEP: 5000
