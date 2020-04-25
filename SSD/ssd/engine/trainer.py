@@ -47,7 +47,7 @@ def do_train(cfg, model,
         loss = sum(loss for loss in loss_dict.values())
 
         meters.update(total_loss=loss, **loss_dict)
-
+        
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()

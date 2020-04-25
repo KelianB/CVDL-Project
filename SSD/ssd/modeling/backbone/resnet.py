@@ -6,7 +6,6 @@ __all__ = ['ResNet', 'resnet18', 'resnet34', 'resnet50', 'resnet101',
            'resnet152', 'resnext50_32x4d', 'resnext101_32x8d',
            'wide_resnet50_2', 'wide_resnet101_2']
 
-
 model_urls = {
     'resnet18': 'https://download.pytorch.org/models/resnet18-5c106cde.pth',
     'resnet34': 'https://download.pytorch.org/models/resnet34-333f7ec4.pth',
@@ -25,11 +24,9 @@ def conv3x3(in_planes, out_planes, stride=1, groups=1, dilation=1):
     return nn.Conv2d(in_planes, out_planes, kernel_size=3, stride=stride, bias=False,
                      padding=dilation, groups=groups, dilation=dilation)
 
-
 def conv1x1(in_planes, out_planes, stride=1):
     """1x1 convolution"""
     return nn.Conv2d(in_planes, out_planes, kernel_size=1, stride=stride, bias=False)
-
 
 
 class BasicBlock(nn.Module):
@@ -122,42 +119,56 @@ class Bottleneck(nn.Module):
 
     
 
-""" This module does nothing. It is only used to indicate at what point we should output the feature maps """
+""" This module does nothing. It is only used to indicate at what point we should output the feature maps. """
 class OutputMarker(nn.Module):
-    def __init__(self):
+    def __init__(self, before_output=None):
         super(OutputMarker, self).__init__()
+        self.before_output = before_output
     
     def forward(self, x):
-        return x
+        return x if self.before_output == None else self.before_output(x)
+
+    
+def conv_bn_relu(channels_in, channels_out, kernel_size=3, padding=1):
+    return nn.Sequential(
+        nn.Conv2d(channels_in, channels_out, kernel_size=kernel_size, stride=1, padding=padding),
+        nn.BatchNorm2d(channels_out),
+        nn.ReLU(inplace=True)
+    )
+        
+def conv_bn_conv_bn_relu(channels_in, channels_out, kernel_size=3, padding=1):
+    return nn.Sequential(
+        nn.Conv2d(channels_in, channels_out, kernel_size=1),
+        nn.BatchNorm2d(channels_out),
+        nn.Conv2d(channels_out, channels_out, kernel_size=kernel_size, stride=1, padding=padding),
+        nn.BatchNorm2d(channels_out),
+        nn.ReLU(inplace=True)
+    )
     
     
 class ResNetFeatureExtractor(nn.Module):
 
-    def __init__(self, block, blocks_per_layers, pretrained_arch=None):
+    def __init__(self, cfg):
         super(ResNetFeatureExtractor, self).__init__()
 
-        self._norm_layer = nn.BatchNorm2d
+        # Bottleneck or BasicBlock
+        block = BasicBlock
+        
+        # The architecture from which to load weights
+        pretrained_arch = "resnet34" if cfg.MODEL.BACKBONE.PRETRAINED else None
+        
         self.inplanes = 64
-        self.dilation = 1
-        self.groups = 1
-        self.base_width = 64
         
-        
-        # for bottleneck   
-        #planes_strides = [(64,1), (128,2), (128,2), (64,2), (32,2), (32,2), (16,2)]
-        # for basic block 
-        #planes_strides = [(128,1), (256,2), (512,2), (256,2), (128,2), (128,2), (64,2)]
-        planes_strides = [(64,1), (128,2), (256,2), (512,2), (256,2), (256,2), (128,2), (64,2)]
-   
-        def resnet_layer(i):
-            return self._make_layer(block, planes_strides[i][0], blocks_per_layers[i], stride=planes_strides[i][1])
+        def resnet_layer(blocks, planes, stride):
+            return self._make_layer(block, planes, blocks, stride=stride)
 
         # Pre-define modules for which we have pre-trained weights
         self.conv1 = nn.Conv2d(3, self.inplanes, kernel_size=7, stride=2, padding=3, bias=False)
         self.bn1 = nn.BatchNorm2d(self.inplanes)
-        self.layer1 = resnet_layer(0)
-        self.layer2 = resnet_layer(1)
-        self.layer3 = resnet_layer(2)
+        self.layer1 = resnet_layer(3, 64, 1)  
+        self.layer2 = resnet_layer(4, 128, 2)
+        self.layer3 = resnet_layer(6, 256, 2)
+        self.layer4 = resnet_layer(3, 512, 2)
         
         # Define architecture
         self.architecture = nn.ModuleList([
@@ -170,34 +181,27 @@ class ResNetFeatureExtractor(nn.Module):
             self.layer1,
             self.layer2,
             self.layer3,
-            nn.Sequential(
-                nn.Conv2d(256, 256, kernel_size=3, stride=1, padding=1),
-                nn.BatchNorm2d(256),
-                nn.ReLU(inplace=True)
-            ),
-            OutputMarker(), # OUTPUT FMAP 1
+            OutputMarker(conv_bn_relu(256, 128)),
+            self.layer4,
+
+            resnet_layer(2, 256, 1), 
+            OutputMarker(conv_bn_relu(256, 256)),
             
-            resnet_layer(3),            
-            OutputMarker(), # OUTPUT FMAP 2
-            
-            resnet_layer(4),
-            OutputMarker(), # OUTPUT FMAP 3
-            
-            resnet_layer(5),
-            OutputMarker(), # OUTPUT FMAP 4
-            
-            resnet_layer(6),
-            OutputMarker(), # OUTPUT FMAP 5
-            
-            resnet_layer(7),
-            nn.Sequential(
-                nn.Conv2d(64, 64, kernel_size=(1,2), stride=1, padding=0),
-                nn.BatchNorm2d(64),
-                nn.ReLU(inplace=True)
-            ),
-            OutputMarker() # OUTPUT FMAP 6
-        ])
+            resnet_layer(3, 1024, 2),
+            OutputMarker(conv_bn_relu(1024, 512)),
         
+            resnet_layer(4, 512, 2),
+            OutputMarker(conv_bn_relu(512, 256)),
+            
+            resnet_layer(4, 128, 2),
+            OutputMarker(),
+            
+            resnet_layer(4, 64, 1),
+            conv_bn_relu(64, 64, kernel_size=3, padding=0),
+            OutputMarker()
+        ])
+
+        # Inititialize weights
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
                 nn.init.kaiming_normal_(m.weight, mode='fan_out', nonlinearity='relu')
@@ -228,43 +232,10 @@ class ResNetFeatureExtractor(nn.Module):
             layers.append(block(self.inplanes, planes))
 
         return nn.Sequential(*layers)
-
-     
-    # No need for a forward function (we call the layers one by one from the SSD backbone)
-    """
-    def _forward_impl(self, x):
-        # See note [TorchScript super()]
-        x = self.conv1(x)
-        x = self.bn1(x)
-        x = self.relu(x)
-        x = self.maxpool(x)
-    
-        x = self.layer1(x)
-        x = self.layer2(x)
-        x = self.layer3(x)
-        x = self.layer4(x)
-
-        return x
-
-    def forward(self, x):
-        return self._forward_impl(x)
-    """
-    
-
     
     
     
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-""" BELOW IS ORIGINAL TORCHVISION CODE FOR RESNET """
+""" BELOW IS ORIGINAL TORCHVISION CODE FOR RESNET, KEPT FOR REFERENCE """
     
     
     

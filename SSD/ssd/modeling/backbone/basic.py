@@ -2,9 +2,7 @@ import torch
 from torch import nn
 from ssd import torch_utils
 
-
 from ssd.modeling.backbone.resnet import ResNetFeatureExtractor, BasicBlock, Bottleneck, OutputMarker
-
 
 class BasicModel(nn.Module):
     """
@@ -20,42 +18,24 @@ class BasicModel(nn.Module):
     """
     def __init__(self, cfg):
         super().__init__()
-        image_size = cfg.INPUT.IMAGE_SIZE
         self.output_channels = cfg.MODEL.BACKBONE.OUT_CHANNELS
         self.output_feature_size = cfg.MODEL.PRIORS.FEATURE_MAPS
 
-        #block = Bottleneck
         block = BasicBlock
-        
-        #blocks_per_layers = [3, 4, 6, 3, 3, 3, 3]
-        #blocks_per_layers = [6, 4, 6, 8, 10, 10, 6]
-        #blocks_per_layers = [3, 4, 6, 10, 10, 10, 10]
-        #blocks_per_layers = [4, 8, 10, 6, 6, 4, 3]
-        blocks_per_layers = [3, 4, 6, 2, 2, 2, 2, 2]
-        self.feature_extractor = ResNetFeatureExtractor(block, blocks_per_layers, pretrained_arch="resnet34")
-        
+        self.feature_extractor = ResNetFeatureExtractor(cfg)
         #print(self.feature_extractor)
-        
-        self._init_weights()
-
-    def _init_weights(self):
-        """
-        layers = [*self.additional_blocks]
-        for layer in layers:
-            for param in layer.parameters():
-                if param.dim() > 1: nn.init.xavier_uniform_(param)
-        """
         
     def forward(self, x):
         out_features = []
         
         for i, l in enumerate(list(self.feature_extractor.architecture)):
             #print("\nlayer", i)
-            x = l(x)
-            #print("\nlayer", i, "done")
             if isinstance(l, OutputMarker):
-                out_features.append(x)
-           
+                out_features.append(l(x))
+            else:
+                x = l(x)
+            #print("\nlayer", i, "done")
+            
         # Check feature map dimensions
         for idx, feature in enumerate(out_features):
             out_channel = self.output_channels[idx]
