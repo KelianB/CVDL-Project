@@ -22,7 +22,7 @@ SOLVER:
     
     GAMMA: 0.1
     BATCH_SIZE: 16
-    LR: 1e-5
+    LR: 1e-4
     WEIGHT_DECAY: 0.005
 OUTPUT_DIR: 'outputs/basic'
 DATASET_DIR: "datasets"

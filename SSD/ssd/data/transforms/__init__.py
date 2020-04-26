@@ -7,6 +7,11 @@ def build_transforms(cfg, is_train=True):
     if is_train:
         transform = [
             ConvertFromInts(),
+            
+            # Data augmentation
+            RandomSampleCrop(),
+            RandomMirror(),
+            
             ToPercentCoords(),
             NonSquareResize(cfg.INPUT.IMAGE_SIZE[0], cfg.INPUT.IMAGE_SIZE[1]),
             SubtractMeans(cfg.INPUT.PIXEL_MEAN),

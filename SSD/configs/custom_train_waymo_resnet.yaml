@@ -18,11 +18,11 @@ SOLVER:
     MAX_ITER: 50000
     LR_STEPS: []
     
-    WARMUP_FACTOR: 1.0
+    WARMUP_FACTOR: 0.33
+    LR: 5e-4
     
     GAMMA: 0.1
     BATCH_SIZE: 16
-    LR: 1e-4
     WEIGHT_DECAY: 0.005
 OUTPUT_DIR: 'outputs/basic'
 DATASET_DIR: "datasets"
