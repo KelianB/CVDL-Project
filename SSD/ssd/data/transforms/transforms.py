@@ -285,8 +285,10 @@ class RandomSampleCrop(object):
                 current_image = image
 
                 w = random.uniform(0.3 * width, width)
-                h = random.uniform(0.3 * height, height)
-
+                # h = random.uniform(0.3 * height, height)
+                # Keep aspect ratio of image
+                h = w * height/width
+                
                 # aspect ratio constraint b/t .5 & 2
                 if h / w < 0.5 or h / w > 2:
                     continue

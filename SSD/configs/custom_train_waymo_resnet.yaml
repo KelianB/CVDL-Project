@@ -18,8 +18,8 @@ SOLVER:
     MAX_ITER: 50000
     LR_STEPS: []
     
-    WARMUP_FACTOR: 1.0
-    
+    WARMUP_FACTOR: 0.33
+     
     GAMMA: 0.1
     BATCH_SIZE: 16
     LR: 1e-3
