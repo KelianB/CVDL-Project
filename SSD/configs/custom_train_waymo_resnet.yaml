@@ -1,5 +1,5 @@
-EVAL_STEP: 1000
-MODEL_SAVE_STEP: 1000
+EVAL_STEP: 2500
+MODEL_SAVE_STEP: 10000
 MODEL:
     NUM_CLASSES: 5
     BACKBONE:
@@ -19,10 +19,10 @@ SOLVER:
     LR_STEPS: []
     
     WARMUP_FACTOR: 0.33
-    LR: 5e-4
-    
+     
     GAMMA: 0.1
     BATCH_SIZE: 16
+    LR: 1e-3
     WEIGHT_DECAY: 0.005
 OUTPUT_DIR: 'outputs/basic'
 DATASET_DIR: "datasets"
