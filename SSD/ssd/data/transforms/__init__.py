@@ -7,8 +7,12 @@ def build_transforms(cfg, is_train=True):
     if is_train:
         transform = [
             ConvertFromInts(),
+            Expand(cfg.INPUT.PIXEL_MEAN),
+            RandomSampleCrop(),
+            RandomMirror(),
             ToPercentCoords(),
             NonSquareResize(cfg.INPUT.IMAGE_SIZE[0], cfg.INPUT.IMAGE_SIZE[1]),
+            PhotometricDistort(),
             SubtractMeans(cfg.INPUT.PIXEL_MEAN),
             DivideBySTD(cfg.INPUT.PIXEL_STD),
             ToTensor(),

@@ -1,5 +1,5 @@
-EVAL_STEP: 1000
-MODEL_SAVE_STEP: 1000
+EVAL_STEP: 2500
+MODEL_SAVE_STEP: 2500
 MODEL:
     NUM_CLASSES: 5
     BACKBONE:
@@ -15,14 +15,14 @@ DATASETS:
     TRAIN: ("tdt4265_train",)
     TEST: ("tdt4265_val", )
 SOLVER:
-    MAX_ITER: 50000
+    MAX_ITER: 100000
     LR_STEPS: []
     
     WARMUP_FACTOR: 0.4
     
     GAMMA: 0.1
     BATCH_SIZE: 16
-    LR: 1e-5
+    LR: 1e-3
     WEIGHT_DECAY: 0.005
 OUTPUT_DIR: 'outputs/basic'
 DATASET_DIR: "datasets"
